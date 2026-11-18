@@ -9,21 +9,12 @@ AArch32 mode like the game's code, on the shared **android32** runtime
 
 **It ships no game code and no game data.** You supply the APK of a copy you
 own. `.gitignore` excludes `*.apk`, `*.obb`, `lib*.so`, `gamefiles/` and
-`assets/`, so none of it can be committed by accident.
-
-## Status: first build, not yet run
-
-This project was written from the example ports and an inspection of the game's
-libraries. It has **not** been compiled with devkitARM/libnx32 and **not** run
-on a console. Expect compile fixes and a first-run JNI to-do list (see
-`NOTES.md`). What was checked: the import table is complete (271 imports, 0
-missing), and every port source file passes a host syntax check against stub
-headers.
+`assets/`
 
 ## Using it (players)
 
 1. Install the NRO launcher (`amatuersurgeon4_nx.nro`) to `sdmc:/switch/amatuersurgeon4_nx/`.
-2. Copy your own APK of the game into that same folder (any name).
+2. Copy your own APK of version 2.7.10 of the game into that same folder (any name).
 3. Create a forwarder in Sphaira then start it. The first launch unpacks `libgame.so` from the APK and lists its Java
    classes; later launches start the game directly. Logs: `debug.log`; settings: `config.ini`.
 
