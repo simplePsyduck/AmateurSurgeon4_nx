@@ -8,9 +8,9 @@
 
 /* ------------------------------------------------------------------ the game */
 #define PORT_TITLE    "Amateur Surgeon 4"
-#define PORT_NAME     "amatuersurgeon4_nx"
+#define PORT_NAME     "amateursurgeon4_nx"
 #define PORT_PACKAGE  "com.turner.amateursurgeon4"
-#define PORT_BANNER   "amatuersurgeon4_nx: Amateur Surgeon 4 (cocos2d-x, armeabi-v7a)"
+#define PORT_BANNER   "amateursurgeon4_nx: Amateur Surgeon 4 (cocos2d-x, armeabi-v7a)"
 
 /* The player's own APK (any name). It is found by what is in it: the game's
  * library, and the package. No version code is required: the port was made

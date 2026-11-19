@@ -40,28 +40,51 @@ fi
 RT_REAL="$(cd -P "$HERE/runtime" && pwd)"
 
 # DCR_LIBNX32, when set, is the only candidate: never a different libnx than
-# the one asked for. (The candidates go in front of make's arguments in "$@",
-# and are shifted off again.)
-if [ -n "${DCR_LIBNX32:-}" ]; then
-  set -- "$DCR_LIBNX32" "$@"; NCAND=1
-else
-  set -- "$HERE/../libnx32/prefix" "$HERE/../../libnx32/prefix" \
-         "$HERE/../../thirtytwo/libnx32/prefix" "$RT_REAL/../libnx32/prefix" \
-         "$RT_REAL/../../libnx32/prefix" "$@"; NCAND=5
-fi
+# the one asked for. Otherwise, in this order, the first that is usable:
+#   ../libnx32/prefix, ../../libnx32/prefix, ../../thirtytwo/libnx32/prefix,
+#   the same two above a symlinked runtime/ (the original places), then
+#   libnx32/prefix in any folder further up (a port unpacked deeper).
+# Usable: lib/libnx.a and include/switch.h, and a libnx.a new enough to have
+# the AArch32 data cache functions (armDCacheFlush: libnx32 of 2026-10-02 or
+# later); an older one is skipped and named.
 LIBNX32=""
-while [ "$NCAND" -gt 0 ]; do
-  if [ -z "$LIBNX32" ] && [ -f "$1/lib/libnx.a" ] && [ -f "$1/include/switch.h" ]; then
-    LIBNX32="$(cd "$1" && pwd)"
+TRIED=""
+try_nx() {
+  [ -n "$LIBNX32" ] && return 0
+  TRIED="$TRIED
+    $1"
+  [ -f "$1/lib/libnx.a" ] && [ -f "$1/include/switch.h" ] || return 0
+  if ! grep -q armDCacheFlush "$1/lib/libnx.a"; then
+    echo "docker_build.sh: skipping $1: its libnx.a is older than the runtime needs (no armDCacheFlush)" >&2
+    TRIED="$TRIED   (too old)"
+    return 0
   fi
-  shift; NCAND=$((NCAND - 1))
-done
+  LIBNX32="$(cd "$1" && pwd)"
+}
+if [ -n "${DCR_LIBNX32:-}" ]; then
+  try_nx "$DCR_LIBNX32"
+else
+  try_nx "$HERE/../libnx32/prefix"
+  try_nx "$HERE/../../libnx32/prefix"
+  try_nx "$HERE/../../thirtytwo/libnx32/prefix"
+  try_nx "$RT_REAL/../libnx32/prefix"
+  try_nx "$RT_REAL/../../libnx32/prefix"
+  d="$(cd "$HERE/../../.." 2>/dev/null && pwd)"
+  while [ -z "$LIBNX32" ] && [ -n "$d" ]; do
+    try_nx "$d/libnx32/prefix"
+    [ "$d" = "/" ] && break
+    d="$(cd "$d/.." && pwd)"
+  done
+fi
 if [ -z "$LIBNX32" ]; then
-  echo "docker_build.sh: the patched libnx32 was not found${DCR_LIBNX32:+ at $DCR_LIBNX32}" >&2
-  echo "  clone github.com/aks796/libnx32 next to the port folder and run its ./build.sh," >&2
-  echo "  or set DCR_LIBNX32 to an installed libnx32 (its prefix/ folder)" >&2
+  echo "docker_build.sh: the patched libnx32 was not found${DCR_LIBNX32:+ at \$DCR_LIBNX32 ($DCR_LIBNX32)}" >&2
+  echo "  port folder: $HERE" >&2
+  echo "  looked for lib/libnx.a and include/switch.h in:$TRIED" >&2
+  echo "  clone github.com/aks796/libnx32 next to the port folder and run its ./build.sh" >&2
+  echo "  (that makes its prefix/), or set DCR_LIBNX32 to an installed libnx32's prefix/" >&2
   exit 1
 fi
+echo "docker_build.sh: libnx32 from $LIBNX32" >&2
 if [ ! -f "$HERE/portlibs32/lib/libEGL.a" ]; then
   echo "docker_build.sh: no portlibs32/ (mesa32's lib/ and include/): building with the null renderer" >&2
 fi

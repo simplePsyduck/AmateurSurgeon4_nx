@@ -1,4 +1,4 @@
-# AmatuerSurgeon4_nx
+# AmateurSurgeon4_nx
 
 An unofficial Nintendo Switch wrapper for the Android version of **Amateur
 Surgeon 4** (`com.turner.amateursurgeon4`). It loads the game's own 32-bit ARM
@@ -9,13 +9,22 @@ AArch32 mode like the game's code, on the shared **android32** runtime
 
 **It ships no game code and no game data.** You supply the APK of a copy you
 own. `.gitignore` excludes `*.apk`, `*.obb`, `lib*.so`, `gamefiles/` and
-`assets/`
+`assets/`, so none of it can be committed by accident.
+
+## Status: first build, not yet run
+
+This project was written from the example ports and an inspection of the game's
+libraries. It has **not** been compiled with devkitARM/libnx32 and **not** run
+on a console. Expect compile fixes and a first-run JNI to-do list (see
+`NOTES.md`). What was checked: the import table is complete (271 imports, 0
+missing), and every port source file passes a host syntax check against stub
+headers.
 
 ## Using it (players)
 
-1. Install the NRO launcher (`amatuersurgeon4_nx.nro`) to `sdmc:/switch/amatuersurgeon4_nx/`.
-2. Copy your own APK of version 2.7.10 of the game into that same folder (any name).
-3. Create a forwarder in Sphaira then start it. The first launch unpacks `libgame.so` from the APK and lists its Java
+1. Install the NRO launcher (`amateursurgeon4_nx.nro`) to `sdmc:/switch/amateursurgeon4_nx/`.
+2. Copy your own `*.apk` of the game into that same folder (any name).
+3. Start it. The first launch unpacks `libgame.so` from the APK and lists its Java
    classes; later launches start the game directly. Logs: `debug.log`; settings: `config.ini`.
 
 Controls: touchscreen as on a phone. Left stick (or D-pad) moves a pointer;
@@ -28,8 +37,8 @@ folder, or `DCR_LIBNX32`), Mesa for AArch32 in `./portlibs32/` (see
 `runtime/README.md`), and `devkitpro/devkita64` for the launcher.
 
 ```sh
-./build.sh              # amatuersurgeon4_nx.nsp  (the 32-bit program)
-launcher/build.sh       # amatuersurgeon4_nx.nro  (carries the .nsp)
+./build.sh              # amateursurgeon4_nx.nsp  (the 32-bit program)
+launcher/build.sh       # amateursurgeon4_nx.nro  (carries the .nsp)
 ./build.sh DCR_GL_MESA=0   # null renderer, to check the build without Mesa
 python3 runtime/tools/gen_imports.py --check   # verify source/imports.c
 ```

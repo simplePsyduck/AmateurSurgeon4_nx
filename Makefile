@@ -7,10 +7,10 @@
 #
 # The build is the android32 runtime's (runtime/runtime.mk: devkitARM +
 # libnx32 + mesa32 from portlibs32/); ./build.sh runs it in the toolchain
-# container. Output: amatuersurgeon4_nx.nsp, which the launcher NRO carries
+# container. Output: amateursurgeon4_nx.nsp, which the launcher NRO carries
 # (launcher/).
 #---------------------------------------------------------------------------------
-TARGET               := amatuersurgeon4_nx
+TARGET               := amateursurgeon4_nx
 # One id per port: change it if it clashes with another port's.
 PORT_NPDM_PROGRAM_ID := 0x01000000000010A4
 include runtime/runtime.mk

@@ -1,4 +1,4 @@
-# amatuersurgeon4_nx: notes
+# amateursurgeon4_nx: notes
 
 ## The game, from the libraries (build supplied for analysis)
 
