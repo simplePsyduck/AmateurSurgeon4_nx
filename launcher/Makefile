@@ -4,8 +4,8 @@
 # (runtime/launcher/); this file only names it.
 #---------------------------------------------------------------------------------
 APP_TITLE    := Amateur Surgeon 4
-APP_AUTHOR   := AmateurSurgeon4_nx
-APP_VERSION  := 0.1.0
+APP_AUTHOR   := simplePsyduck
+APP_VERSION  := 1.0
 TARGET       := amateursurgeon4_nx
 PORT_PAYLOAD := amateursurgeon4_nx
 LAUNCHER_SOURCES :=
